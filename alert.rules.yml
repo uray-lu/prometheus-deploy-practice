@@ -1,0 +1,23 @@
+groups:
+- name: Gitlab Alerts
+  rules:
+  - alert: GitlabContainerDown
+    expr: time() - container_last_seen{name="gitlab"} > 180
+    for: 1m
+    labels:
+      severity: critical
+      team: "teamGitlab"
+    annotations:
+      summary: "Gitlab Container is down"
+      description: "The container 'gitlab' has been down for more than 3 minute."
+  - alert: ContainerFrequentRestart
+    expr: changes(container_start_time_seconds{name="gitlab"}[1m]) > 0
+    for: 1m
+    labels:
+      severity: critical
+      team: "teamGitlab"
+    annotations:
+      summary: "Frequent restarts detected for container my_container"
+      description: "Container 'gitlab' has restarted multiple times in the last 1 minute"
+
+

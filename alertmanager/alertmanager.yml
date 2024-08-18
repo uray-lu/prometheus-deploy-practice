@@ -1,0 +1,28 @@
+global:
+  smtp_from: "ALERT <example@gmail.com>"
+  smtp_smarthost: smtp.gmail.com:587
+  smtp_auth_username: example@gmail.com
+  smtp_auth_password: example_password
+  smtp_require_tls: true
+
+route:
+  receiver: default-receiver
+  group_by: ['alertname', 'team']
+  routes:
+    - match:
+        team: "teamGitlab"
+      receiver: teamGitlab-receiver
+    - match:
+        team: "teamAirflow"
+      receiver: teamAirflow-receiver
+    - match:
+        team: "teamTest"
+      receiver: teamTest-receiver
+
+receivers:
+  - name: default-receiver
+    email_configs:
+      - to: example@mail.com
+        send_resolved: true
+        headers:
+          Subject: "[ALERT] {{ .CommonLabels.alertname }}"
